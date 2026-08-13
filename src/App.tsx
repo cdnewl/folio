@@ -3,8 +3,6 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView } from "@codemirror/view";
-import MarkdownIt from "markdown-it";
-import hljs from "highlight.js";
 import {
   open as openDialog,
   save as saveDialog,
@@ -12,56 +10,27 @@ import {
 } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
+import {
+  Tab,
+  OpenedFile,
+  freshTab,
+  baseName,
+  tabName,
+  isDirty,
+  isDroppable,
+  mergeOpenedFiles,
+  removeTab,
+} from "./tabs";
+import { renderMarkdown } from "./markdown";
 import "highlight.js/styles/github-dark.css";
 import "./App.css";
 
 type Mode = "split" | "edit" | "read";
 
-type Tab = {
-  id: number;
-  filePath: string | null;
-  content: string;
-  savedContent: string;
-};
-
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  breaks: true,
-  highlight: (str: string, lang: string): string => {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(str, { language: lang }).value;
-      } catch {
-        /* fall through */
-      }
-    }
-    return "";
-  },
-});
-
 const MD_FILTERS = [
   { name: "Markdown", extensions: ["md", "markdown", "mdown", "mkd"] },
   { name: "All Files", extensions: ["*"] },
 ];
-
-const DROPPABLE = /\.(md|markdown|mdown|mkd|txt)$/i;
-
-function baseName(p: string): string {
-  const norm = p.replace(/\\/g, "/");
-  return norm.slice(norm.lastIndexOf("/") + 1);
-}
-
-const tabName = (t: Tab): string => (t.filePath ? baseName(t.filePath) : "untitled");
-const isDirty = (t: Tab): boolean => t.content !== t.savedContent;
-
-let tabSeq = 0;
-const freshTab = (): Tab => ({
-  id: ++tabSeq,
-  filePath: null,
-  content: "",
-  savedContent: "",
-});
 
 export default function App() {
   const [tabs, setTabs] = useState<Tab[]>(() => [freshTab()]);
@@ -104,7 +73,10 @@ export default function App() {
     });
   }, [active.id]);
 
-  const previewHtml = useMemo(() => md.render(active.content), [active.content]);
+  const previewHtml = useMemo(
+    () => renderMarkdown(active.content),
+    [active.content]
+  );
 
   const flash = (msg: string) => {
     setStatus(msg);
@@ -130,22 +102,13 @@ export default function App() {
       );
       if (!ok) return;
     }
-    const next = tabs.filter((t) => t.id !== id);
-    if (next.length === 0) {
-      const nt = freshTab();
-      setTabs([nt]);
-      setActiveId(nt.id);
-      return;
-    }
-    setTabs(next);
-    if (id === active.id) {
-      const idx = tabs.findIndex((t) => t.id === id);
-      setActiveId(next[Math.min(idx, next.length - 1)].id);
-    }
+    const result = removeTab(tabs, active.id, id);
+    setTabs(result.tabs);
+    setActiveId(result.activateId);
   };
 
   const loadFiles = async (paths: string[]) => {
-    const loaded: { path: string; text: string }[] = [];
+    const loaded: OpenedFile[] = [];
     for (const p of paths) {
       try {
         loaded.push({ path: p, text: await readTextFile(p) });
@@ -154,39 +117,9 @@ export default function App() {
       }
     }
     if (loaded.length === 0) return;
-    const next = [...tabs];
-    let firstId: number | null = null;
-    for (const { path, text } of loaded) {
-      const existingIdx = next.findIndex((t) => t.filePath === path);
-      if (existingIdx >= 0) {
-        next[existingIdx] = { ...next[existingIdx], content: text, savedContent: text };
-        firstId ??= next[existingIdx].id;
-      } else {
-        const pristineIdx = next.findIndex(
-          (t) => t.filePath === null && t.content === ""
-        );
-        if (pristineIdx >= 0) {
-          next[pristineIdx] = {
-            ...next[pristineIdx],
-            filePath: path,
-            content: text,
-            savedContent: text,
-          };
-          firstId ??= next[pristineIdx].id;
-        } else {
-          const nt: Tab = {
-            id: ++tabSeq,
-            filePath: path,
-            content: text,
-            savedContent: text,
-          };
-          next.push(nt);
-          firstId ??= nt.id;
-        }
-      }
-    }
-    setTabs(next);
-    if (firstId !== null) setActiveId(firstId);
+    const result = mergeOpenedFiles(tabs, loaded);
+    setTabs(result.tabs);
+    if (result.activateId !== null) setActiveId(result.activateId);
     flash(
       loaded.length === 1
         ? `Opened ${baseName(loaded[0].path)}`
@@ -232,7 +165,7 @@ export default function App() {
           setDragging(false);
         } else if (p.type === "drop") {
           setDragging(false);
-          const paths = p.paths.filter((x) => DROPPABLE.test(x));
+          const paths = p.paths.filter(isDroppable);
           if (paths.length > 0) void loadFiles(paths);
           else flash("Drop a .md / .txt file");
         }

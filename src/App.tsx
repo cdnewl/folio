@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -69,6 +69,37 @@ export default function App() {
   const [mode, setMode] = useState<Mode>("split");
   const [status, setStatus] = useState<string>("");
   const [dragging, setDragging] = useState<boolean>(false);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollState = () => {
+    const el = stripRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  const scrollTabs = (dir: number) => {
+    stripRef.current?.scrollBy({ left: dir * 240, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    updateScrollState();
+    const el = stripRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(updateScrollState);
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
+
+  useEffect(() => {
+    const el = stripRef.current?.querySelector(".tab.active");
+    (el as HTMLElement | null)?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+    });
+  });
 
   const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
   const dirty = isDirty(active);
@@ -283,27 +314,55 @@ export default function App() {
         </div>
       </header>
       <nav className="tabbar">
-        {tabs.map((t) => (
-          <div
-            key={t.id}
-            className={`tab${t.id === active.id ? " active" : ""}`}
-            onClick={() => setActiveId(t.id)}
-            title={t.filePath ?? "unsaved"}
+        {canScrollLeft && (
+          <button
+            className="tab-scroll"
+            onClick={() => scrollTabs(-1)}
+            title="Scroll tabs left"
           >
-            <span className="tab-name">{tabName(t)}</span>
-            {isDirty(t) && <span className="dirty-dot" />}
-            <button
-              className="tab-close"
-              title="Ctrl+W"
-              onClick={(e) => {
-                e.stopPropagation();
-                void closeTab(t.id);
-              }}
+            ‹
+          </button>
+        )}
+        <div
+          className="tab-strip"
+          ref={stripRef}
+          onScroll={updateScrollState}
+          onWheel={(e) => {
+            const el = stripRef.current;
+            if (el) el.scrollLeft += e.deltaY + e.deltaX;
+          }}
+        >
+          {tabs.map((t) => (
+            <div
+              key={t.id}
+              className={`tab${t.id === active.id ? " active" : ""}`}
+              onClick={() => setActiveId(t.id)}
+              title={t.filePath ?? "unsaved"}
             >
-              ×
-            </button>
-          </div>
-        ))}
+              <span className="tab-name">{tabName(t)}</span>
+              {isDirty(t) && <span className="dirty-dot" />}
+              <button
+                className="tab-close"
+                title="Ctrl+W"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  void closeTab(t.id);
+                }}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        {canScrollRight && (
+          <button
+            className="tab-scroll"
+            onClick={() => scrollTabs(1)}
+            title="Scroll tabs right"
+          >
+            ›
+          </button>
+        )}
         <button className="tab-new" onClick={newTab} title="Ctrl+T">
           +
         </button>

@@ -107,12 +107,36 @@ button:disabled {
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   flex: none;
+}
+
+.tab-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.tabbar::-webkit-scrollbar {
+.tab-strip::-webkit-scrollbar {
   display: none;
+}
+
+.tab-scroll {
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+  flex: none;
+}
+
+.tab-scroll:hover {
+  color: var(--accent);
 }
 
 .tab {

@@ -7,7 +7,7 @@ import {
   isDroppable,
   mergeOpenedFiles,
   removeTab,
-} from "./tabs";
+} from "../src/tabs";
 
 let seq = 0;
 const tab = (over: Partial<Tab> = {}): Tab => ({

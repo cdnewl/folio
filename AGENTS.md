@@ -15,7 +15,7 @@ Folio — Windows Markdown 阅读/编辑器。Tauri 2 (Rust 壳) + React 19 + TS
 - `src/App.tsx` — 整个 UI（tab 条、CodeMirror 编辑器、预览、拖放、快捷键、Tauri API 交互）
 - `src/tabs.ts` — tab 纯逻辑（mergeOpenedFiles/removeTab/baseName/isDirty/isDroppable），零 React 依赖
 - `src/markdown.ts` — markdown-it 实例与渲染契约（breaks:true，见 DECISIONS）
-- `src/tabs.test.ts` / `src/markdown.test.ts` — Vitest 单测（`npm test`）
+- `tests/` — Vitest 单测（`npm test`），新测试一律进这里，import 用 `../src/xxx`
 - `src/App.css` — One Dark 配色 + 霓虹灯带，全部样式
 - `src-tauri/tauri.conf.json` — 窗口/打包配置（productName=Folio）
 - `src-tauri/Cargo.toml` — package name = folio（决定 exe 名，见 PITFALLS T-2）

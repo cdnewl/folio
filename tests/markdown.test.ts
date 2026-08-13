@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderMarkdown } from "./markdown";
+import { renderMarkdown } from "../src/markdown";
 
 describe("rendering contract: mainstream-camp parity", () => {
   it("single newline breaks the line (breaks: true)", () => {

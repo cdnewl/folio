@@ -93,16 +93,16 @@ export default function App() {
     return () => ro.disconnect();
   });
 
+  const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
+  const dirty = isDirty(active);
+
   useEffect(() => {
     const el = stripRef.current?.querySelector(".tab.active");
     (el as HTMLElement | null)?.scrollIntoView({
       block: "nearest",
       inline: "nearest",
     });
-  });
-
-  const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
-  const dirty = isDirty(active);
+  }, [active.id]);
 
   const previewHtml = useMemo(() => md.render(active.content), [active.content]);
 

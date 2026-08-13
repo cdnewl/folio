@@ -10,6 +10,9 @@ Folio 踩坑档案。按领域分类，类内独立编号。新坑追加到对�
 拖放/全局监听挂 `useEffect(..., [])` 时，回调闭包捕获的是首次渲染的 state 快照。Folio 实例：拖放判断「当前 tab 是否空白」永远读到初始值，导致脏 tab 被拖入文件原地覆盖。而渲染主路径上的按钮（Open）每次渲染都是新闭包所以正常——同一份逻辑两种行为，极难复现定位。
 纪律：依赖当次 state 的事件监听，要么每次渲染重挂（省依赖数组，开销可忽略），要么用 ref 穿透。Folio 选前者（与键盘监听同模式）。
 
+**React-2: 无依赖 useEffect = 每次渲染都跑，滚动类效应必装触发闸**
+Folio 实例：「激活 tab 自动滚进视野」的 scrollIntoView 挂在无依赖 effect 里，点箭头 scrollBy 往外滚 → onScroll setState → 重渲染 → effect 又把激活 tab 拽回来，两力对冲表现为「来回跳完全划不动」。修法：effect 挂 `[active.id]`，只在激活 tab 真变化时校正视野。与 React-1 是同一族：effect 的依赖数组就是它的扳机，不给扳机等于全自动。
+
 ## Markdown / CommonMark
 
 **MD-1: 软换行折叠**——单个 `\n` 在 CommonMark 里渲染为空格，不是换行。要 Typora 体感需 markdown-it `breaks: true`（单 `\n` → `<br>`）。注意两大阵营：软换行派（Typora/Obsidian 默认/GitHub 评论）vs 严格派（GitHub README 文件/VS Code 预览/Pandoc）。

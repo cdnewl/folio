@@ -270,6 +270,12 @@ export default function App() {
               key={t.id}
               className={`tab${t.id === active.id ? " active" : ""}`}
               onClick={() => setActiveId(t.id)}
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  e.preventDefault();
+                  void closeTab(t.id);
+                }
+              }}
               title={t.filePath ?? "unsaved"}
             >
               <span className="tab-name">{tabName(t)}</span>

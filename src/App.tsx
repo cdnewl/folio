@@ -113,35 +113,61 @@ export default function App() {
     }
   };
 
-  const loadFile = async (path: string) => {
-    try {
-      const text = await readTextFile(path);
-      const existing = tabs.find((t) => t.filePath === path);
-      if (existing) {
-        patchTab(existing.id, { content: text, savedContent: text });
-        setActiveId(existing.id);
-      } else if (active.filePath === null && active.content === "") {
-        patchTab(active.id, { filePath: path, content: text, savedContent: text });
-      } else {
-        const nt: Tab = {
-          id: ++tabSeq,
-          filePath: path,
-          content: text,
-          savedContent: text,
-        };
-        setTabs((ts) => [...ts, nt]);
-        setActiveId(nt.id);
+  const loadFiles = async (paths: string[]) => {
+    const loaded: { path: string; text: string }[] = [];
+    for (const p of paths) {
+      try {
+        loaded.push({ path: p, text: await readTextFile(p) });
+      } catch (e) {
+        flash(`Open failed: ${baseName(p)} — ${String(e)}`);
       }
-      flash(`Opened ${baseName(path)}`);
-    } catch (e) {
-      flash(`Open failed: ${String(e)}`);
     }
+    if (loaded.length === 0) return;
+    const next = [...tabs];
+    let firstId: number | null = null;
+    for (const { path, text } of loaded) {
+      const existingIdx = next.findIndex((t) => t.filePath === path);
+      if (existingIdx >= 0) {
+        next[existingIdx] = { ...next[existingIdx], content: text, savedContent: text };
+        firstId ??= next[existingIdx].id;
+      } else {
+        const pristineIdx = next.findIndex(
+          (t) => t.filePath === null && t.content === ""
+        );
+        if (pristineIdx >= 0) {
+          next[pristineIdx] = {
+            ...next[pristineIdx],
+            filePath: path,
+            content: text,
+            savedContent: text,
+          };
+          firstId ??= next[pristineIdx].id;
+        } else {
+          const nt: Tab = {
+            id: ++tabSeq,
+            filePath: path,
+            content: text,
+            savedContent: text,
+          };
+          next.push(nt);
+          firstId ??= nt.id;
+        }
+      }
+    }
+    setTabs(next);
+    if (firstId !== null) setActiveId(firstId);
+    flash(
+      loaded.length === 1
+        ? `Opened ${baseName(loaded[0].path)}`
+        : `Opened ${loaded.length} files`
+    );
   };
 
   const openFile = async () => {
-    const selected = await openDialog({ multiple: false, filters: MD_FILTERS });
-    if (!selected || typeof selected !== "string") return;
-    await loadFile(selected);
+    const selected = await openDialog({ multiple: true, filters: MD_FILTERS });
+    if (!selected) return;
+    const paths = Array.isArray(selected) ? selected : [selected];
+    await loadFiles(paths);
   };
 
   const saveFile = async () => {
@@ -175,8 +201,8 @@ export default function App() {
           setDragging(false);
         } else if (p.type === "drop") {
           setDragging(false);
-          const path = p.paths.find((x) => DROPPABLE.test(x));
-          if (path) void loadFile(path);
+          const paths = p.paths.filter((x) => DROPPABLE.test(x));
+          if (paths.length > 0) void loadFiles(paths);
           else flash("Drop a .md / .txt file");
         }
       })

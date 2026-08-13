@@ -22,3 +22,5 @@ Folio 裁决账本。时间线流水，append-only，新条目压底部。
 2026-08-12 21:20 [issue] tab 条右侧出现上下箭头滚动 UI（WebView2 给 overflow-x:auto 画的滚动条）。修法：scrollbar-width:none + ::-webkit-scrollbar{display:none} 双保险。
 
 2026-08-12 21:26 [defer] 关窗口不拦截脏 tab。触发条件：用户被咬过一次（关了窗口丢未保存内容）。修法方向：Rust 侧 on_close_requested 或前端 getCurrentWindow().onCloseRequested + 额外 window 权限。
+
+2026-08-12 21:39 [decision] 多文件批量打开：Open 对话框 multiple:true + 拖放从「取第一个匹配」改「过滤全部匹配」。loadFile 升级 loadFiles：批量读取（单文件失败不阻塞其余，状态栏点名失败文件）→ 一次性计算 tab 数组（已开文件刷新内容并切 tab / 复用空白未命名 tab 仅限首个 / 其余开新 tab）→ 激活批量中的第一个文件。

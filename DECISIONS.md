@@ -24,3 +24,5 @@ Folio 裁决账本。时间线流水，append-only，新条目压底部。
 2026-08-12 21:26 [defer] 关窗口不拦截脏 tab。触发条件：用户被咬过一次（关了窗口丢未保存内容）。修法方向：Rust 侧 on_close_requested 或前端 getCurrentWindow().onCloseRequested + 额外 window 权限。
 
 2026-08-12 21:39 [decision] 多文件批量打开：Open 对话框 multiple:true + 拖放从「取第一个匹配」改「过滤全部匹配」。loadFile 升级 loadFiles：批量读取（单文件失败不阻塞其余，状态栏点名失败文件）→ 一次性计算 tab 数组（已开文件刷新内容并切 tab / 复用空白未命名 tab 仅限首个 / 其余开新 tab）→ 激活批量中的第一个文件。
+
+2026-08-12 22:05 [defer] 不可信 md 防护两件套：CSP 收束 + 渲染 HTML 消毒。现状：tauri.conf.json `csp: null`（无内容安全策略）+ markdown-it `html: true` + dangerouslySetInnerHTML——恶意 md 可用 `<img onerror=>` 类内联事件在窗口上下文执行 JS，叠加 fs scope `**` 形成口子。用户裁决：fs `**` 是编辑器天职不动，自用场景威胁模型不存在，维持现状。触发条件：打开「别人给的/网上下的」md 成为常态。修法方向：① csp 配 `script-src 'self'` 禁内联事件（需逐个源测 CodeMirror 内联样式兼容性，~半小时）；② DOMPurify 消毒或 `html: false` 直接禁原始 HTML。两条一起上，不分先后。

@@ -33,4 +33,6 @@ Folio 裁决账本。时间线流水，append-only，新条目压底部。
 
 2026-08-12 22:24 [decision] 滚动箭头芯片化：透明小灰字看不清 → 实底描边小按钮（mode-switch 同族）+ 字形加大加粗（17px/700）+ 常时淡蓝辉光、hover accent 点亮——与顶部霓虹灯带同一视觉语言。否决单纯加大（灰字再大也融背景）和换重字形 ❮❯（字体兼容性风险，加粗 ‹› 已够）。
 
+2026-08-12 22:35 [decision] 光晕语言统一裁决：光是装饰元素的专利（顶部灯带），交互控件一律「hover 描边+文字点亮、零光晕」——按钮常亮在语义上是激活/警告，本不该有。撤掉滚动箭头的常时辉光与 hover 辉光（22:24 条目的加戏部分作废，芯片化保留）。同时修箭头垂直对齐：align-self:center 改 flex-end + margin-bottom:4px，与贴底的 tab 同基线。验证手段：临时 seed 14 tab 出一次性构建截图确认后还原（正经 exe 无此 seed）。
+
 2026-08-12 22:05 [defer] 不可信 md 防护两件套：CSP 收束 + 渲染 HTML 消毒。现状：tauri.conf.json `csp: null`（无内容安全策略）+ markdown-it `html: true` + dangerouslySetInnerHTML——恶意 md 可用 `<img onerror=>` 类内联事件在窗口上下文执行 JS，叠加 fs scope `**` 形成口子。用户裁决：fs `**` 是编辑器天职不动，自用场景威胁模型不存在，维持现状。触发条件：打开「别人给的/网上下的」md 成为常态。修法方向：① csp 配 `script-src 'self'` 禁内联事件（需逐个源测 CodeMirror 内联样式兼容性，~半小时）；② DOMPurify 消毒或 `html: false` 直接禁原始 HTML。两条一起上，不分先后。

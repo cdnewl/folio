@@ -124,7 +124,9 @@ button:disabled {
 }
 
 .tab-scroll {
-  align-self: center;
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--text-bright);
@@ -134,14 +136,12 @@ button:disabled {
   padding: 3px 9px 5px;
   border-radius: 6px;
   flex: none;
-  margin: 0 2px;
-  box-shadow: 0 0 6px rgba(97, 175, 239, 0.25);
+  margin: 0 2px 4px;
 }
 
 .tab-scroll:hover {
   border-color: var(--accent);
   color: var(--accent);
-  box-shadow: 0 0 10px rgba(97, 175, 239, 0.5);
 }
 
 .tab {

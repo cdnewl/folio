@@ -29,6 +29,11 @@ Folio — Windows Markdown 阅读/编辑器。Tauri 2 (Rust 壳) + React 19 + TS
 - 出包：`npx tauri build --no-bundle`（portable exe，增量 ~50s）
 - 前端检查：`npm run build`（tsc + vite）
 
+## 协作规矩
+
+- GUI 截图验收需要特定状态（如 tab 溢出）时，**直接请用户手动造状态**，不要临时改代码 seed 再还原——用户操作十秒，临时构建来回两轮编译
+- 截图法：PowerShell `System.Drawing` 的 `CopyFromScreen` 存 PNG → read_image 查看（Windows 零依赖）
+
 ## 行为基线（改动别破坏）
 
 - 渲染对齐主流阵营：单回车换行（breaks:true），连续空行折叠——与其他 md 软件打开一致是硬约束

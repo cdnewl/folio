@@ -31,4 +31,6 @@ Folio 裁决账本。时间线流水，append-only，新条目压底部。
 
 2026-08-12 22:14 [decision] 测试策略定案：抽纯逻辑单测（Vitest，node 环境），React 渲染层与 Tauri API 交互不测（jsdom + mock 整个 Tauri 性价比低）。为此把 App.tsx 内联逻辑重构出两个纯模块：src/tabs.ts（mergeOpenedFiles/removeTab/baseName/isDirty/isDroppable，行为契约写进 docstring——脏确认是调用方职责）与 src/markdown.ts（markdown-it 实例单例 + 渲染契约注释）。37 测试全绿：tabs 30（路径解析/脏判定/拖放扩展名/合并六案/关闭五案）+ markdown 7（主流阵营渲染契约，含围栏内空行原样保留）。
 
+2026-08-12 22:24 [decision] 滚动箭头芯片化：透明小灰字看不清 → 实底描边小按钮（mode-switch 同族）+ 字形加大加粗（17px/700）+ 常时淡蓝辉光、hover accent 点亮——与顶部霓虹灯带同一视觉语言。否决单纯加大（灰字再大也融背景）和换重字形 ❮❯（字体兼容性风险，加粗 ‹› 已够）。
+
 2026-08-12 22:05 [defer] 不可信 md 防护两件套：CSP 收束 + 渲染 HTML 消毒。现状：tauri.conf.json `csp: null`（无内容安全策略）+ markdown-it `html: true` + dangerouslySetInnerHTML——恶意 md 可用 `<img onerror=>` 类内联事件在窗口上下文执行 JS，叠加 fs scope `**` 形成口子。用户裁决：fs `**` 是编辑器天职不动，自用场景威胁模型不存在，维持现状。触发条件：打开「别人给的/网上下的」md 成为常态。修法方向：① csp 配 `script-src 'self'` 禁内联事件（需逐个源测 CodeMirror 内联样式兼容性，~半小时）；② DOMPurify 消毒或 `html: false` 直接禁原始 HTML。两条一起上，不分先后。

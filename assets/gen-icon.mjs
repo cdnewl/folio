@@ -60,7 +60,8 @@ function paint(px, py) {
   const stripY = top.c[1] - s(154);
   const dStrip = sdRoundRect(px, py, top.c[0], stripY, HW - s(54), s(21), s(21));
   const sc = stripH(clamp((px - (top.c[0] - HW + s(54))) / (2 * (HW - s(54))), 0, 1));
-  const g = Math.exp(-(Math.max(0, dStrip) ** 2) / (2 * s(112) ** 2)) * 0.5;
+  // glow kept tight so the halo never reaches the canvas edge (clipping reads as a bug)
+  const g = Math.exp(-(Math.max(0, dStrip) ** 2) / (2 * s(58) ** 2)) * 0.55;
   over(st, sc, g);
   over(st, sc, cov(dStrip));
   const dCore = sdRoundRect(px, py, top.c[0], stripY, HW - s(54), s(7), s(7));

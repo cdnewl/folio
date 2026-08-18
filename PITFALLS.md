@@ -29,6 +29,8 @@ Folio 实例：「激活 tab 自动滚进视野」的 scrollIntoView 挂在无�
 
 **T-4: 构建输出目录可用 `src-tauri/.cargo/config.toml` 的 `[build] target-dir` 上挪**（相对 src-tauri 解析）。
 
+**T-5: 换图标后 cargo build script 不重跑，exe 内嵌图标不更新**——tauri-build 生成的 resource.rc/res 缓存在 `target/release/build/folio-*/out/`，`tauri icon` 换图后普通 rebuild 甚至 `cargo clean -p folio`（报 Removed 0 files）都不会刷新。修法：手动删 `target/release/build/folio-*` 两个目录再 `npm run tauri build`。验证法：PowerShell `[System.Drawing.Icon]::ExtractAssociatedIcon(exe).ToBitmap().Save(png)` 抽出来肉眼看。注意区分另一种「旧图标」：Explorer/任务栏 iconcache 或启动的是旧部署副本，exe 本身没问题。
+
 ## 环境（本机）
 
 **ENV-1: 用户 npm 有 allow-scripts 策略**——esbuild postinstall 被拦只产生警告，不影响构建（esbuild 0.28 平台二进制走 optionalDependencies）。若将来某包因 postinstall 缺失真坏掉，跑 `npm approve-scripts <pkg>`。

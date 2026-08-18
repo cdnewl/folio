@@ -38,3 +38,7 @@ Folio 裁决账本。时间线流水，append-only，新条目压底部。
 2026-08-12 22:40 [decision] 鼠标中键关 tab：onMouseDown 捕获 button===1 + preventDefault（挡浏览器自动滚动模式），走与 × 完全相同的 closeTab 路径——脏确认、相邻激活、末 tab 补空白全部自动继承，零新逻辑。
 
 2026-08-12 22:05 [defer] 不可信 md 防护两件套：CSP 收束 + 渲染 HTML 消毒。现状：tauri.conf.json `csp: null`（无内容安全策略）+ markdown-it `html: true` + dangerouslySetInnerHTML——恶意 md 可用 `<img onerror=>` 类内联事件在窗口上下文执行 JS，叠加 fs scope `**` 形成口子。用户裁决：fs `**` 是编辑器天职不动，自用场景威胁模型不存在，维持现状。触发条件：打开「别人给的/网上下的」md 成为常态。修法方向：① csp 配 `script-src 'self'` 禁内联事件（需逐个源测 CodeMirror 内联样式兼容性，~半小时）；② DOMPurify 消毒或 `html: false` 直接禁原始 HTML。两条一起上，不分先后。
+
+2026-08-18 18:20 [decision] 开源化定案：License 选 Apache-2.0（用户拍板，与 MIT 省事程度相同，多专利授权条款）；README 英文为主 + README.zh-CN.md 顶部互链（开源惯例）；package.json 改名 folio 补 description/license/author/repository，`private: true` 保留（防误 publish npm，不影响开源）；版权署名 "© 2026 Xun"。三件套（AGENTS/DECISIONS/PITFALLS）随仓库公开。
+
+2026-08-18 18:20 [decision] 图标定稿：程序化生成（assets/gen-icon.mjs，零依赖 SDF 渲染 1024px 源图 → `npx tauri icon` 出全套）。设计迭代：v0 拟物纸张+折角被否（像 2000s）→ v3 层叠卡片入选，灯带从卡底挪到顶卡上沿（呼应 app 实际顶部灯带）→ v4 去 iOS 式 squircle 底板改 Windows 惯例（透明底+自由造型+占满画布），加 ~1.75px 深青黑外描边（浅色主题下顶卡不融入背景）。tauri icon 生成的 ios/android 子目录裁掉不提交（桌面-only 项目）。

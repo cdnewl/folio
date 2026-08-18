@@ -1,7 +1,14 @@
 {
-  "name": "tauri-app",
+  "name": "folio",
   "private": true,
   "version": "0.1.0",
+  "description": "A small, fast Markdown reader & writer for Windows (Tauri 2 + React 19)",
+  "license": "Apache-2.0",
+  "author": "Xun",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cdnewl/folio"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

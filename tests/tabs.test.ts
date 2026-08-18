@@ -23,7 +23,7 @@ describe("baseName", () => {
     expect(baseName("C:\\Users\\xun\\docs\\note.md")).toBe("note.md");
   });
   it("extracts the name from a POSIX path", () => {
-    expect(baseName("/home/xun/note.md")).toBe("note.md");
+    expect(baseName("/home/user/note.md")).toBe("note.md");
   });
   it("returns a bare filename unchanged", () => {
     expect(baseName("note.md")).toBe("note.md");

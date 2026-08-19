@@ -6,8 +6,8 @@ A small, fast Markdown reader & writer for Windows, built with Tauri 2.
 Single portable `.exe` (~11 MB) — no installer, no runtime dependencies, no telemetry.
 
 <p align="center">
-  <img src="screenshots/withContent.png" width="49%" alt="Split mode: editing docs/showcase.md with live preview">
   <img src="screenshots/home.png" width="49%" alt="Empty state: Folio wordmark with drop hint">
+  <img src="screenshots/withContent.png" width="49%" alt="Split mode: editing docs/showcase.md with live preview">
 </p>
 
 ## Features

@@ -6,8 +6,8 @@
 单个便携 `.exe`(约 11 MB)—— 无安装器、无运行时依赖、无遥测。
 
 <p align="center">
-  <img src="screenshots/withContent.png" width="49%" alt="分栏模式:编辑 docs/showcase.md 并实时预览">
   <img src="screenshots/home.png" width="49%" alt="空态:Folio 字标与拖放提示">
+  <img src="screenshots/withContent.png" width="49%" alt="分栏模式:编辑 docs/showcase.md 并实时预览">
 </p>
 
 ## 功能

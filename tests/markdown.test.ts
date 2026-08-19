@@ -40,4 +40,12 @@ describe("rendering contract: mainstream-camp parity", () => {
     const html = renderMarkdown("```\nfirst\n\n\nsecond\n```");
     expect(html).toContain("first\n\n\nsecond");
   });
+
+  it("task list items render as disabled checkboxes", () => {
+    const html = renderMarkdown("- [x] done\n- [ ] pending");
+    expect(html).toContain("task-list-item");
+    expect(html).toContain('type="checkbox"');
+    expect(html).toContain("checked");
+    expect(html).toContain("disabled");
+  });
 });

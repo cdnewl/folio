@@ -1,4 +1,5 @@
 import MarkdownIt from "markdown-it";
+import taskLists from "markdown-it-task-lists";
 import hljs from "highlight.js";
 
 /**
@@ -22,5 +23,7 @@ const md = new MarkdownIt({
     return "";
   },
 });
+
+md.use(taskLists); // read-only preview: checkboxes stay disabled, matching GitHub/Typora
 
 export const renderMarkdown = (src: string): string => md.render(src);

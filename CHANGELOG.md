@@ -8,6 +8,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - Empty preview watermark: Folio wordmark + mini light strip + drop hint (the only in-app mention of drag & drop)
+- Task list rendering via markdown-it-task-lists (disabled checkboxes, GitHub/Typora-style)
 
 ## [0.1.0] - 2026-08-18
 

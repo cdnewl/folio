@@ -5,14 +5,16 @@
 一个轻巧的 Windows Markdown 阅读/编辑器,基于 Tauri 2 构建。
 单个便携 `.exe`(约 11 MB)—— 无安装器、无运行时依赖、无遥测。
 
-![Folio 分栏模式,渲染 docs/showcase.md](docs/screenshot.png)
+![Folio 分栏模式,渲染 docs/showcase.md](screenshots/withContent.png)
 
 ## 功能
 
 - **三种视图模式** —— 编辑、分栏(实时预览)、阅读
 - **多标签页** —— 未保存关闭确认、中键关闭、溢出箭头 + 滚轮滚动
 - **拖放** —— 支持多文件拖入,打开对话框支持多选
-- **忠实渲染** —— markdown-it(`breaks: true`)+ highlight.js,渲染效果与主流 Markdown 软件一致
+- **忠实渲染** —— markdown-it(`breaks: true`)+ highlight.js + 任务列表,渲染效果与主流 Markdown 软件一致
+
+![空态:Folio 字标 + 拖放提示](screenshots/home.png)
 - **舒适编辑** —— CodeMirror 6 + One Dark 主题
 - **极薄 Rust 层** —— 零自定义 Tauri 命令,文件访问只走官方 `dialog` + `fs` 插件
 

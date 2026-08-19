@@ -5,14 +5,16 @@
 A small, fast Markdown reader & writer for Windows, built with Tauri 2.
 Single portable `.exe` (~11 MB) — no installer, no runtime dependencies, no telemetry.
 
-![Folio in Split mode, rendering docs/showcase.md](docs/screenshot.png)
+![Folio in Split mode, rendering docs/showcase.md](screenshots/withContent.png)
 
 ## Features
 
 - **Three view modes** — Edit, Split (live preview side by side), Read
 - **Multi-tab** — dirty-close confirmation, middle-click to close, overflow arrows + wheel scrolling
 - **Drag & drop** — drop multiple files in, or multi-select via the open dialog
-- **Faithful rendering** — markdown-it (`breaks: true`) + highlight.js, renders like other mainstream Markdown apps
+- **Faithful rendering** — markdown-it (`breaks: true`) + highlight.js + task lists, renders like other mainstream Markdown apps
+
+![Empty state: Folio wordmark + drop hint](screenshots/home.png)
 - **Comfortable editing** — CodeMirror 6 with the One Dark theme
 - **Thin Rust core** — zero custom Tauri commands; file access goes through the official `dialog` + `fs` plugins only
 

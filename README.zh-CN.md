@@ -5,7 +5,7 @@
 一个轻巧的 Windows Markdown 阅读/编辑器,基于 Tauri 2 构建。
 单个便携 `.exe`(约 11 MB)—— 无安装器、无运行时依赖、无遥测。
 
-![icon](assets/icon-source.png)
+![Folio 分栏模式,渲染 docs/showcase.md](docs/screenshot.png)
 
 ## 功能
 

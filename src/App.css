@@ -284,6 +284,41 @@ button:disabled {
   background: var(--panel);
 }
 
+/* empty preview watermark: wordmark + mini light strip (brand signature) */
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  user-select: none;
+}
+
+.wordmark {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  text-indent: 10px; /* optically re-centers the wide letter-spacing */
+  color: var(--text-bright);
+  opacity: 0.16;
+}
+
+.mini-strip {
+  width: 120px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--purple), var(--red));
+  box-shadow: 0 0 10px rgba(198, 120, 221, 0.5);
+  opacity: 0.65;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: var(--text);
+  opacity: 0.45;
+}
+
 .markdown-body {
   max-width: 780px;
   margin: 0 auto;

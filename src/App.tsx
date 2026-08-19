@@ -326,10 +326,20 @@ export default function App() {
         )}
         {mode !== "edit" && (
           <div className="pane preview-pane">
-            <article
-              className="markdown-body"
-              dangerouslySetInnerHTML={{ __html: previewHtml }}
-            />
+            {active.content.trim() === "" ? (
+              <div className="empty-state">
+                <div className="wordmark">Folio</div>
+                <div className="mini-strip" />
+                <div className="empty-hint">
+                  Drop a Markdown file anywhere to open it
+                </div>
+              </div>
+            ) : (
+              <article
+                className="markdown-body"
+                dangerouslySetInnerHTML={{ __html: previewHtml }}
+              />
+            )}
           </div>
         )}
       </main>
